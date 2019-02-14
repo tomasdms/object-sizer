@@ -13,19 +13,22 @@ mussles = []
 def midpoint(ptA, ptB):
     return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
+file_path = 'img2.jpg'
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=False,
-                help="path to the input image", default='img2.jpg')
+                help="path to the input image", default= file_path)
 ap.add_argument("-w", "--width", type=float, required=False,
                 help="width of the left-most object in the image (in inches)", default='0.9')
 args = vars(ap.parse_args())
 
 # load the image, convert it to grayscale, and blur it slightly
 image = cv2.imread(args["image"])
+# image = cv2.resize(image, (320, 240))
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 gray = cv2.GaussianBlur(gray, (7, 7), 0)
-
+# re, gray = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
 # perform edge detection, then perform a dilation + erosion to
 # close gaps in between object edges
 edged = cv2.Canny(gray, 50, 100)
@@ -46,7 +49,7 @@ pixelsPerMetric = None
 #remove smaller matches
 print("pre filter count: ", len(cnts))
 # if the contour is not sufficiently large, ignore it
-cnts = [c for c in cnts if cv2.contourArea(c) > 90]
+cnts = [c for c in cnts if cv2.contourArea(c) > 90 ]
 print("Post-filter count: ", len(cnts))
 
 
